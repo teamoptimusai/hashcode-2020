@@ -11,8 +11,10 @@ public class PracticeProblem {
         int n_types_pizza = inputs.get(0).get(1); // different types of pizza
         ArrayList<Integer> pizza_slices = inputs.get(1); // slices of each different type of pizza
         //dynamic programming graph
-        print_graph(n_people, n_types_pizza, graph(n_people, n_types_pizza, pizza_slices));
-
+        int[][] table =  graph(n_people, n_types_pizza, pizza_slices);
+        print_graph(n_people, n_types_pizza,table);
+        ArrayList<Integer> results = back_graph(n_people, n_types_pizza, table);
+        System.out.println(results.toString());
 
     }
     //Input Function
@@ -52,6 +54,8 @@ public class PracticeProblem {
                     int next = 0;
                     if (results[i][0] < results[0][j]){
                         next = results[i][0] + results[i-1][results[0][j] - results[i][0]];
+                    }else if(results[i][0] == results[0][j]){
+                        next = results[i][0];
                     }
                     int[] max_list = {upper,next};
                     Arrays.sort(max_list);
@@ -77,5 +81,30 @@ public class PracticeProblem {
             }
             System.out.println();
         }
+    }
+    // backward graph
+    public static ArrayList<Integer> back_graph(int n_people, int n_type_pizza, int[][] graph){
+        ArrayList<Integer> answers = new ArrayList<>();
+        int i = n_type_pizza;
+        int j = n_people;
+        while (i > 1){
+            if (graph[i][j] == graph[i-1][j]){
+                i--;
+            }else{
+                answers.add(graph[i][0]);
+                j = graph[0][j] - graph[i][0];
+                i--;
+            }
+            if (j < 1){
+                break;
+            }
+            if (i == 1){
+                answers.add(graph[i][0]);
+            }
+//            System.out.println(i);
+//            System.out.println(j);
+        }
+        return answers;
+
     }
 }
