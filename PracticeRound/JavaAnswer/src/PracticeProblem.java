@@ -1,10 +1,12 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
 
 public class PracticeProblem {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //taking inputs
         ArrayList<ArrayList<Integer>> inputs = takeInputs();
         int n_people = inputs.get(0).get(0); // no of people to feed
@@ -12,10 +14,10 @@ public class PracticeProblem {
         ArrayList<Integer> pizza_slices = inputs.get(1); // slices of each different type of pizza
         //dynamic programming graph
         int[][] table =  graph(n_people, n_types_pizza, pizza_slices);
-        print_graph(n_people, n_types_pizza,table);
+//        print_graph(n_people, n_types_pizza,table);
         ArrayList<Integer> results = back_graph(n_people, n_types_pizza, table);
         System.out.println(results.toString());
-
+        output(results);
     }
     //Input Function
     public static ArrayList<ArrayList<Integer>> takeInputs(){
@@ -91,7 +93,7 @@ public class PracticeProblem {
             if (graph[i][j] == graph[i-1][j]){
                 i--;
             }else{
-                answers.add(graph[i][0]);
+                answers.add(i-1);
                 j = graph[0][j] - graph[i][0];
                 i--;
             }
@@ -99,12 +101,21 @@ public class PracticeProblem {
                 break;
             }
             if (i == 1){
-                answers.add(graph[i][0]);
+                answers.add(i-1);
             }
 //            System.out.println(i);
 //            System.out.println(j);
         }
         return answers;
-
+    }
+    // output file
+    public static void output(ArrayList<Integer> results) throws IOException {
+        FileWriter writer = new FileWriter("output.txt");
+        int size = results.size();
+        writer.write(size + "\n");
+        for (int slice: results){
+            writer.write(slice + " ");
+        }
+        writer.close();
     }
 }
